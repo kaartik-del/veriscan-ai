@@ -1,4 +1,5 @@
 import { FileText } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const navLinks = [
   { label: "How it works", href: "#how-it-works" },
@@ -30,6 +31,7 @@ const Navbar = () => {
         </nav>
 
         <div className="flex items-center gap-4">
+          <ThemeToggle />
           <a
             href="#upload"
             className="hidden rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-card sm:inline-flex"
