@@ -1,61 +1,140 @@
+import { motion, type Easing } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Shield, CheckCircle } from "lucide-react";
+import { Shield, Sparkles } from "lucide-react";
+
+const ease: Easing = [0.25, 0.46, 0.45, 0.94];
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease },
+  },
+};
 
 const HeroSection = () => {
   return (
-    <section className="relative overflow-hidden pb-16 pt-24 md:pb-24 md:pt-32">
-      {/* Subtle gradient background */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background via-secondary/30 to-background" />
-      
-      {/* Decorative elements */}
-      <div className="absolute -top-40 right-0 -z-10 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
-      <div className="absolute -bottom-40 left-0 -z-10 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
+    <section className="relative min-h-screen overflow-hidden pt-32 pb-20 mesh-gradient grain">
+      {/* Floating gradient orbs */}
+      <motion.div 
+        className="absolute top-20 right-[20%] w-96 h-96 rounded-full bg-primary/10 blur-3xl"
+        animate={{ 
+          scale: [1, 1.1, 1],
+          opacity: [0.3, 0.5, 0.3],
+        }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div 
+        className="absolute bottom-20 left-[10%] w-80 h-80 rounded-full bg-primary/5 blur-3xl"
+        animate={{ 
+          scale: [1.1, 1, 1.1],
+          opacity: [0.2, 0.4, 0.2],
+        }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      />
 
-      <div className="container">
-        <div className="mx-auto max-w-4xl text-center">
+      <div className="container relative z-10">
+        <motion.div 
+          className="mx-auto max-w-4xl text-center"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
           {/* Trust badge */}
-          <div className="mb-6 inline-flex animate-fade-in items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm shadow-soft">
-            <Shield className="h-4 w-4 text-primary" />
-            <span className="text-muted-foreground">Trusted by 500+ HR professionals</span>
-          </div>
+          <motion.div 
+            variants={itemVariants}
+            className="mb-8 inline-flex items-center gap-2 rounded-full glass px-4 py-2 shadow-ambient"
+          >
+            <Shield className="h-4 w-4 text-primary" strokeWidth={1.5} />
+            <span className="text-sm text-muted-foreground">Trusted by 500+ HR professionals</span>
+          </motion.div>
 
           {/* Main headline */}
-          <h1 className="mb-6 animate-fade-in text-4xl font-bold tracking-tight text-foreground [animation-delay:100ms] md:text-5xl lg:text-6xl">
+          <motion.h1 
+            variants={itemVariants}
+            className="mb-6 text-5xl font-semibold tracking-tighter text-foreground md:text-6xl lg:text-7xl"
+          >
             Detect Resume Fraud
-            <span className="block bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            <motion.span 
+              className="block bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+            >
               with AI
-            </span>
-          </h1>
+            </motion.span>
+          </motion.h1>
 
           {/* Subtext */}
-          <p className="mx-auto mb-8 max-w-2xl animate-fade-in text-lg text-muted-foreground [animation-delay:200ms] md:text-xl">
-            Verify candidate skills and detect resume fraud instantly. Our AI-powered platform provides trust scores and detailed skill verification to help you hire with confidence.
-          </p>
+          <motion.p 
+            variants={itemVariants}
+            className="mx-auto mb-10 max-w-2xl text-lg text-muted-foreground md:text-xl"
+          >
+            Verify candidate skills and detect resume fraud instantly. Our AI-powered platform provides trust scores and detailed skill verification.
+          </motion.p>
 
           {/* CTA buttons */}
-          <div className="flex animate-fade-in flex-col items-center justify-center gap-4 [animation-delay:300ms] sm:flex-row">
+          <motion.div 
+            variants={itemVariants}
+            className="flex flex-col items-center justify-center gap-4 sm:flex-row"
+          >
             <Button variant="hero" size="xl" asChild>
-              <a href="#upload">Upload Resume</a>
+              <motion.a 
+                href="#upload"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="shadow-glow"
+              >
+                <Sparkles className="h-4 w-4" strokeWidth={1.5} />
+                Upload Resume
+              </motion.a>
             </Button>
             <Button variant="hero-secondary" size="xl" asChild>
-              <a href="#how-it-works">See How It Works</a>
+              <motion.a 
+                href="#how-it-works"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                See How It Works
+              </motion.a>
             </Button>
-          </div>
+          </motion.div>
 
           {/* Trust indicators */}
-          <div className="mt-12 flex animate-fade-in flex-wrap items-center justify-center gap-6 [animation-delay:400ms]">
+          <motion.div 
+            variants={itemVariants}
+            className="mt-16 flex flex-wrap items-center justify-center gap-8"
+          >
             {[
-              "AI-Powered Analysis",
-              "Instant Results",
-              "Enterprise Security",
-            ].map((item) => (
-              <div key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
-                <CheckCircle className="h-4 w-4 text-success" />
-                <span>{item}</span>
-              </div>
+              { label: "AI-Powered", value: "Analysis" },
+              { label: "Instant", value: "Results" },
+              { label: "Enterprise", value: "Security" },
+            ].map((item, i) => (
+              <motion.div 
+                key={item.label}
+                className="text-center"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 + i * 0.1 }}
+              >
+                <p className="text-2xl font-semibold tracking-tight text-foreground">{item.label}</p>
+                <p className="text-sm text-muted-foreground">{item.value}</p>
+              </motion.div>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

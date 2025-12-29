@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Upload, FileText, X, Loader2 } from "lucide-react";
+import { Upload, FileText, X, Loader2, Sparkles } from "lucide-react";
 
 interface UploadSectionProps {
   onAnalyze: () => void;
@@ -52,34 +53,60 @@ const UploadSection = ({ onAnalyze, isAnalyzing }: UploadSectionProps) => {
   };
 
   return (
-    <section id="upload" className="py-16 md:py-24">
+    <section id="upload" className="py-24 md:py-32 relative">
       <div className="container">
-        <div className="mx-auto max-w-2xl">
+        <motion.div 
+          className="mx-auto max-w-2xl"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
           {/* Section header */}
-          <div className="mb-8 text-center">
-            <h2 className="mb-3 text-2xl font-semibold text-foreground md:text-3xl">
+          <div className="mb-10 text-center">
+            <motion.h2 
+              className="mb-3 text-3xl font-semibold tracking-tighter text-foreground md:text-4xl"
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+            >
               Upload Your Resume
-            </h2>
-            <p className="text-muted-foreground">
+            </motion.h2>
+            <motion.p 
+              className="text-muted-foreground"
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
               Drop your resume below and let our AI analyze it for authenticity
-            </p>
+            </motion.p>
           </div>
 
-          {/* Upload card */}
-          <div className="rounded-xl border border-border bg-card p-8 shadow-card">
-            {/* Drag & drop area */}
-            <div
+          {/* Upload card - Glassmorphism */}
+          <motion.div 
+            className="glass rounded-2xl p-8 shadow-ambient-lg"
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.4 }}
+          >
+            {/* Luminous Portal - Drag & drop area */}
+            <motion.div
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`group cursor-pointer rounded-lg border-2 border-dashed p-12 text-center transition-all duration-200 ${
+              className={`relative cursor-pointer rounded-xl border-2 border-dashed p-16 text-center transition-all duration-300 portal-glow ${
                 isDragging
-                  ? "border-primary bg-primary/5"
+                  ? "border-primary bg-primary/5 active"
                   : file
                   ? "border-success/50 bg-success/5"
-                  : "border-border hover:border-primary/50 hover:bg-secondary/50"
+                  : "border-border/50 hover:border-primary/50"
               }`}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
             >
               <input
                 ref={fileInputRef}
@@ -89,68 +116,98 @@ const UploadSection = ({ onAnalyze, isAnalyzing }: UploadSectionProps) => {
                 className="hidden"
               />
 
-              {file ? (
-                <div className="flex flex-col items-center">
-                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success/10">
-                    <FileText className="h-8 w-8 text-success" />
-                  </div>
-                  <p className="mb-1 font-medium text-foreground">{file.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {(file.size / 1024).toFixed(1)} KB
-                  </p>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleRemoveFile();
-                    }}
-                    className="mt-4 inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-destructive"
+              <AnimatePresence mode="wait">
+                {file ? (
+                  <motion.div 
+                    key="file"
+                    className="flex flex-col items-center"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.2 }}
                   >
-                    <X className="h-4 w-4" />
-                    Remove file
-                  </button>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center">
-                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-secondary transition-colors group-hover:bg-primary/10">
-                    <Upload className="h-8 w-8 text-muted-foreground transition-colors group-hover:text-primary" />
-                  </div>
-                  <p className="mb-1 font-medium text-foreground">
-                    Drag & drop your resume here
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    or click to browse files
-                  </p>
-                  <p className="mt-4 text-xs text-muted-foreground">
-                    Supports PDF, DOC, DOCX (Max 10MB)
-                  </p>
-                </div>
-              )}
-            </div>
+                    <motion.div 
+                      className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-success/10"
+                      animate={{ rotate: [0, 5, -5, 0] }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <FileText className="h-8 w-8 text-success" strokeWidth={1.5} />
+                    </motion.div>
+                    <p className="mb-1 font-medium text-foreground">{file.name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {(file.size / 1024).toFixed(1)} KB
+                    </p>
+                    <motion.button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveFile();
+                      }}
+                      className="mt-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-destructive"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <X className="h-4 w-4" strokeWidth={1.5} />
+                      Remove file
+                    </motion.button>
+                  </motion.div>
+                ) : (
+                  <motion.div 
+                    key="empty"
+                    className="flex flex-col items-center"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <motion.div 
+                      className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary transition-colors"
+                      animate={isDragging ? { scale: 1.1, rotate: 5 } : { scale: 1, rotate: 0 }}
+                    >
+                      <Upload className={`h-8 w-8 transition-colors ${isDragging ? "text-primary" : "text-muted-foreground"}`} strokeWidth={1.5} />
+                    </motion.div>
+                    <p className="mb-1 font-medium text-foreground">
+                      Drag & drop your resume here
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      or click to browse files
+                    </p>
+                    <p className="mt-4 text-xs text-muted-foreground/60">
+                      Supports PDF, DOC, DOCX (Max 10MB)
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
 
             {/* Analyze button */}
-            <div className="mt-6 flex justify-center">
+            <motion.div 
+              className="mt-8 flex justify-center"
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4 }}
+            >
               <Button
                 variant="hero"
                 size="lg"
                 onClick={handleAnalyzeClick}
                 disabled={!file || isAnalyzing}
-                className="min-w-48"
+                className="min-w-52 shadow-glow"
               >
                 {isAnalyzing ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.5} />
                     Analyzing...
                   </>
                 ) : (
                   <>
-                    <FileText className="h-4 w-4" />
+                    <Sparkles className="h-4 w-4" strokeWidth={1.5} />
                     Analyze Resume
                   </>
                 )}
               </Button>
-            </div>
-          </div>
-        </div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
