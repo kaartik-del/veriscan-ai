@@ -26,8 +26,7 @@ const makeSlot = (i: number, distX: number, distY: number, total: number): Slot 
   zIndex: total - i
 });
 
-const placeNow = (el: HTMLElement | null, slot: Slot, skew: number) => {
-  if (!el) return;
+const placeNow = (el: HTMLElement | null, slot: Slot, skew: number) =>
   gsap.set(el, {
     x: slot.x,
     y: slot.y,
@@ -39,7 +38,6 @@ const placeNow = (el: HTMLElement | null, slot: Slot, skew: number) => {
     zIndex: slot.zIndex,
     force3D: true
   });
-};
 
 interface CardSwapProps {
   width?: number;
@@ -106,7 +104,6 @@ const CardSwap: React.FC<CardSwapProps> = ({
 
       const [front, ...rest] = order.current;
       const elFront = refs[front].current;
-      if (!elFront) return;
 
       const tl = gsap.timeline();
       tlRef.current = tl;
@@ -121,7 +118,6 @@ const CardSwap: React.FC<CardSwapProps> = ({
 
       rest.forEach((idx, i) => {
         const el = refs[idx].current;
-        if (!el) return;
         const slot = makeSlot(i, cardDistance, verticalDistance, refs.length);
         tl.set(el, { zIndex: slot.zIndex }, 'promote');
         tl.to(
@@ -168,7 +164,7 @@ const CardSwap: React.FC<CardSwapProps> = ({
     swap();
     intervalRef.current = window.setInterval(swap, delay);
 
-    if (pauseOnHover && container.current) {
+    if (pauseOnHover) {
       const node = container.current;
       const pause = () => {
         tlRef.current?.pause();
@@ -179,12 +175,12 @@ const CardSwap: React.FC<CardSwapProps> = ({
         intervalRef.current = window.setInterval(swap, delay);
       };
 
-      node.addEventListener('mouseenter', pause);
-      node.addEventListener('mouseleave', resume);
+      node?.addEventListener('mouseenter', pause);
+      node?.addEventListener('mouseleave', resume);
 
       return () => {
-        node.removeEventListener('mouseenter', pause);
-        node.removeEventListener('mouseleave', resume);
+        node?.removeEventListener('mouseenter', pause);
+        node?.removeEventListener('mouseleave', resume);
         clearInterval(intervalRef.current);
       };
     }
