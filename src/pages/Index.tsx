@@ -1,3 +1,6 @@
+// Index.tsx - Main page component
+// This is the landing page that contains all sections
+
 import { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import HeroSection from "@/components/sections/HeroSection";
@@ -7,7 +10,7 @@ import HowItWorksSection from "@/components/sections/HowItWorksSection";
 import FeaturesSection from "@/components/sections/FeaturesSection";
 import Footer from "@/components/layout/Footer";
 
-// Mock data for demo
+// Mock data for demo - this will be replaced by real data from backend
 const mockSkills = [
   { name: "React.js", verified: true, confidence: 95 },
   { name: "TypeScript", verified: true, confidence: 88 },
@@ -18,20 +21,24 @@ const mockSkills = [
 ];
 
 const Index = () => {
+  // State to control whether to show the results section
   const [showResults, setShowResults] = useState(false);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  
+  // State to store the backend response data
+  const [analysisData, setAnalysisData] = useState<any>(null);
 
-  const handleAnalyze = () => {
-    setIsAnalyzing(true);
-    // Simulate API call
+  // Called when upload is complete and successful
+  const handleAnalyzeComplete = (data: any) => {
+    // Store the response data from backend
+    setAnalysisData(data);
+    
+    // Show the results section
+    setShowResults(true);
+    
+    // Scroll to results section smoothly
     setTimeout(() => {
-      setIsAnalyzing(false);
-      setShowResults(true);
-      // Scroll to results
-      setTimeout(() => {
-        document.getElementById("results")?.scrollIntoView({ behavior: "smooth" });
-      }, 100);
-    }, 2000);
+      document.getElementById("results")?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   };
 
   return (
@@ -41,11 +48,18 @@ const Index = () => {
         <HeroSection />
         <HowItWorksSection />
         <FeaturesSection />
-        <UploadSection onAnalyze={handleAnalyze} isAnalyzing={isAnalyzing} />
         
+        {/* Upload section - passes callback to handle successful upload */}
+        <UploadSection onAnalyzeComplete={handleAnalyzeComplete} />
+        
+        {/* Results section - only shown after successful upload */}
         {showResults && (
           <div id="results">
-            <ResultsSection trustScore={78} skills={mockSkills} />
+            {/* Using mock data for now - replace with analysisData when backend returns real data */}
+            <ResultsSection 
+              trustScore={analysisData?.trustScore || 78} 
+              skills={analysisData?.skills || mockSkills} 
+            />
           </div>
         )}
       </main>
