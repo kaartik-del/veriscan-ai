@@ -1,6 +1,11 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FileText } from "lucide-react";
+import { FileText, LogIn, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import ThemeToggle from "@/components/ThemeToggle";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 const navLinks = [
   { label: "How it works", href: "#how-it-works" },
@@ -9,6 +14,28 @@ const navLinks = [
 ];
 
 const Navbar = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+  };
+
   return (
     <motion.header 
       initial={{ y: -20, opacity: 0 }}
@@ -42,14 +69,27 @@ const Navbar = () => {
 
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <motion.a
-              href="#upload"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="hidden rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-ambient transition-all hover:shadow-glow sm:inline-flex"
-            >
-              Get Started
-            </motion.a>
+            {user ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLogout}
+                className="gap-2"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Logout</span>
+              </Button>
+            ) : (
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => navigate("/auth")}
+                className="gap-2"
+              >
+                <LogIn className="h-4 w-4" />
+                <span className="hidden sm:inline">Login</span>
+              </Button>
+            )}
           </div>
         </div>
       </div>
