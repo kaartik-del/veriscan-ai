@@ -2,6 +2,7 @@ import { motion, type Easing } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Shield, Sparkles, FileText, CheckCircle, AlertTriangle } from "lucide-react";
 import { CardSwap, Card } from "@/components/CardSwap";
+import { Galaxy } from "@/components/Galaxy";
 
 const ease: Easing = [0.25, 0.46, 0.45, 0.94];
 
@@ -49,24 +50,26 @@ const resumeCards = [
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen overflow-hidden pt-32 pb-20 mesh-gradient grain">
-      {/* Floating gradient orbs */}
-      <motion.div 
-        className="absolute top-20 right-[20%] w-96 h-96 rounded-full bg-primary/10 blur-3xl"
-        animate={{ 
-          scale: [1, 1.1, 1],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div 
-        className="absolute bottom-20 left-[10%] w-80 h-80 rounded-full bg-primary/5 blur-3xl"
-        animate={{ 
-          scale: [1.1, 1, 1.1],
-          opacity: [0.2, 0.4, 0.2],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-      />
+    <section className="relative min-h-screen overflow-hidden pt-32 pb-20">
+      {/* Galaxy Background */}
+      <div className="absolute inset-0 z-0">
+        <Galaxy
+          hueShift={240}
+          density={1.2}
+          speed={0.5}
+          starSpeed={0.3}
+          glowIntensity={0.5}
+          saturation={0.3}
+          twinkleIntensity={0.4}
+          rotationSpeed={0.02}
+          mouseRepulsion={true}
+          repulsionStrength={1.5}
+          transparent={false}
+        />
+      </div>
+      
+      {/* Gradient overlay for readability */}
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-background/50 via-background/30 to-background" />
 
       <div className="container relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
